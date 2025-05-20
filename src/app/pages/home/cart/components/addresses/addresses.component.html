@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> Choose an Address </ion-title>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" color="dark" (click)="dismiss($event)">
+        <ion-icon name="arrow-back-outline"> </ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  @if(addressData.length > 0 )
+  {
+  <ion-radio-group>
+    <ion-list lines="none" class="ion-margin">
+      @for(add of addressData; track $index)
+      {
+      <ion-item (click)="selectAddress(add)">
+        <ion-label color="dark">
+          {{add?.save_as}}
+          <p>
+            <span> {{add?.house_no}}, </span>
+            @if (add?.landmark) {
+            <span>{{add?.landmark}},</span>
+            } {{add?.add}}, {{add?.city}} -{{add?.pincode}}
+            {{add?.state}},{{add?.country}}
+          </p>
+        </ion-label>
+
+        <ion-radio slot="end" mode="md" aria-label="add" [value]="add.id">
+
+        </ion-radio>
+      </ion-item>
+      }
+    </ion-list>
+  </ion-radio-group>
+  }
+
+  <ion-item lines="none" (click)="dismiss(1)">
+    <ion-icon slot="start" name="add" color="primary"></ion-icon>
+    <ion-label color="primary">
+      Add New Address
+    </ion-label>
+  </ion-item>
+
+</ion-content>

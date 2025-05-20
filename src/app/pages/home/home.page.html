@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> Gift Shop </ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="cart-button" [routerLink]="['/','home','cart']">
+        <ion-icon slot="icon-only" name="bag-handle" color="danger"></ion-icon>
+        @if(quantity > 0) {
+        <ion-badge class="cart-badge">{{quantity}}</ion-badge>
+        }
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+
+  <ion-toolbar>
+    <ion-searchbar debounce="800" #searchInput mode="android" class="sarchbar" placeholder="Search for gift..."
+      (ionInput)="onSearchChange($event)">
+
+    </ion-searchbar>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-row>
+    @for(item of items; track i; let i=$index) {
+    <ion-col sizeLg="3" sizeMd="4" sizeSm="6" sizeXl="3" sizeXs="6">
+
+      <ion-card [routerLink]="['/','home','gifts',item?.id]" class="product-card">
+        <div class="image-container">
+          <ion-img [src]="item?.thumbnail" class="product-image"></ion-img>
+          <div class="discount-badge" *ngIf="item?.discountPercentage > 10">
+            -{{item?.discountPercentage | number:'1.0-0'}}%
+          </div>
+        </div>
+
+        <div class="product-content">
+          <h3 class="product-title">{{item?.title}}</h3>
+          <div class="price-rating">
+            <ion-text class="price">
+              <strong>${{item?.price}}</strong>
+            </ion-text>
+            <div class="rating">
+              <ion-icon name="star" color="warning"></ion-icon>
+              <span>{{item?.rating}}</span>
+            </div>
+          </div>
+        </div>
+      </ion-card>
+
+
+    </ion-col>
+    }
+  </ion-row>
+</ion-content>

@@ -1,0 +1,153 @@
+<ion-content [fullscreen]="true">
+  <ion-header class="ion-no-border">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/home"></ion-back-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+        <ion-button>
+          <ion-icon slot="icon-only" name="heart-outline" color="danger"></ion-icon>
+        </ion-button>
+           <ion-button class="cart-button" [routerLink]="['/','home','gifts',item?.id,'cart']">
+          <ion-icon slot="icon-only" name="bag-handle" color="danger"></ion-icon>
+          @if(cartQuantity > 0) {
+          <ion-badge class="cart-badge">{{cartQuantity}}</ion-badge>
+          }
+        </ion-button>
+        <ion-button>
+          <ion-icon slot="icon-only" name="share-social-outline" color="dark"></ion-icon>
+        </ion-button>
+
+     
+
+
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Loading spinner -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="circular"></ion-spinner>
+    <p>Loading product details...</p>
+  </div>
+
+  <div class="product-container" *ngIf="!isLoading && item">
+    <!-- Product Images Slider -->
+    <div class="image-slider">
+      <ion-img [src]="item.images && item.images.length > 0 ? item.images[activeImageIndex] : item.thumbnail"
+        class="main-image"></ion-img>
+
+      <!-- Thumbnail navigation -->
+      <div class="thumbnail-nav" *ngIf="item.images && item.images.length > 1">
+        <div *ngFor="let image of item.images; let i = index" class="thumbnail" [class.active]="activeImageIndex === i"
+          (click)="setActiveImage(i)">
+          <ion-img [src]="image"></ion-img>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="product-info ion-padding">
+      <!-- <div class="category-badge">
+        <ion-badge color="light" mode="ios">{{item.category}}</ion-badge>
+        <ion-badge color="warning" mode="ios" *ngIf="item.discountPercentage > 0">
+          {{item.discountPercentage}}% OFF
+        </ion-badge>
+      </div> -->
+
+      <h1 class="product-title">{{item.title}}</h1>
+
+      <div class="rating-stock">
+        <div class="rating">
+          <ion-icon name="star" color="warning"></ion-icon>
+          <span>{{item.rating}}</span>
+        </div>
+        <div class="stock"
+          [ngClass]="{'in-stock': item.stock > 10, 'low-stock': item.stock <= 10 && item.stock > 0, 'out-of-stock': item.stock === 0}">
+          <ion-icon name="checkmark-circle" *ngIf="item.stock > 0"></ion-icon>
+          <ion-icon name="close-circle" *ngIf="item.stock === 0"></ion-icon>
+          <span *ngIf="item.stock > 10">In Stock</span>
+          <span *ngIf="item.stock <= 10 && item.stock > 0">Only {{item.stock}} left</span>
+          <span *ngIf="item.stock === 0">Out of Stock</span>
+        </div>
+      </div>
+
+      <div class="price-container">
+        <div class="price">
+          <h2>{{cartService.currency}}{{item.price}}</h2>
+          <span class="original-price" *ngIf="item.discountPercentage > 0">
+            {{cartService.currency}}{{(item.price / (1 - item.discountPercentage / 100)).toFixed(2)}}
+          </span>
+        </div>
+      </div>
+
+      <div class="description">
+        <h3>Description</h3>
+        <p>{{item.description}}</p>
+      </div>
+
+      <!-- Product Features -->
+      <div class="features" *ngIf="item.brand">
+        <h3>Features</h3>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <div class="feature">
+                <ion-icon name="business-outline"></ion-icon>
+                <div>
+                  <span class="feature-label">Brand</span>
+                  <span class="feature-value">{{item.brand}}</span>
+                </div>
+              </div>
+            </ion-col>
+            <ion-col size="6" *ngIf="item.category">
+              <div class="feature">
+                <ion-icon name="pricetag-outline"></ion-icon>
+                <div>
+                  <span class="feature-label">Category</span>
+                  <span class="feature-value">{{item.category}}</span>
+                </div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+
+      <!-- Quantity Selector -->
+      <div class="quantity-selector">
+        <h3>Quantity</h3>
+        <div class="quantity-controls">
+          <ion-button fill="clear" (click)="decreaseQuantity()" [disabled]="selectedQuantity <= 0">
+            <ion-icon name="remove-circle-outline"></ion-icon>
+          </ion-button>
+          <span class="quantity">{{selectedQuantity}}</span>
+          <ion-button fill="clear" (click)="increaseQuantity()" [disabled]="item?.stock == selectedQuantity">
+            <ion-icon name="add-circle-outline"></ion-icon>
+          </ion-button>
+        </div>
+        <p class="stock-note" *ngIf="item.stock <= 10">
+          <ion-text color="warning">
+            <small>Only {{item.stock}} items left in stock</small>
+          </ion-text>
+        </p>
+      </div>
+
+      <!-- Add to Cart Button -->
+      <ion-button expand="block" class="add-to-cart-btn" (click)="addToCart()" [disabled]="selectedQuantity <= 0">
+        <ion-icon name="cart-outline" slot="start"></ion-icon>
+        Add to Cart
+      </ion-button>
+
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div class="error-container" *ngIf="!isLoading && !item">
+    <ion-icon name="alert-circle-outline" color="danger" size="large"></ion-icon>
+    <h2>Product Not Found</h2>
+    <p>We couldn't find the product you're looking for.</p>
+    <ion-button routerLink="/home" fill="solid" color="primary">
+      Back to Shop
+    </ion-button>
+  </div>
+</ion-content>
